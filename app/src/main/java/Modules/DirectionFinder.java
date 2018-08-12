@@ -106,6 +106,7 @@ public class DirectionFinder  {
 
         TrafficFinder trafficFinderNew = new TrafficFinder(context); //TRAFFIC API
 
+        WeatherFinder weatherFinder = new WeatherFinder(context, "Auckland"); //HARDCODED
 
         for (int i = 0; i < jsonRoutes.length(); i++) { //number of routes
 
@@ -174,6 +175,9 @@ public class DirectionFinder  {
                 safestRouteIndex = k + 1;
             }
         }
+
+        weatherFinder.execute();
+
 
         listener.onDirectionFinderSuccess(routes,safestRouteIndex);
     }

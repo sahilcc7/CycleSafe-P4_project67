@@ -236,6 +236,8 @@ public class CommuteFragment extends Fragment implements OnMapReadyCallback, Dir
     @Override
     public void onDirectionFinderSuccess(List<Route> routes, int safestRouteIndex) {
 
+        AlertDialogManager alert = new AlertDialogManager();
+
         progressDialog.dismiss();
         polylinePaths = new ArrayList<>();
         originMarkers = new ArrayList<>();
@@ -293,9 +295,13 @@ public class CommuteFragment extends Fragment implements OnMapReadyCallback, Dir
 
             polylinePaths.add(mMap.addPolyline(polylineOptions));
         } catch (Exception e) {
-            Toast.makeText(getActivity(), "GOOGLE IS FUCKING US", Toast.LENGTH_LONG).show();
+            Toast.makeText(getActivity(), "GOOGLE API PROBLEM", Toast.LENGTH_LONG).show();
             e.printStackTrace();
         }
+
+        //alert.showAlertDialog(getContext(), "Alert","this is alert", true); //THISS THROWS PERMISSION ERROR
+
+
     }
 
 
