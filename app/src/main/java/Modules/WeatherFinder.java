@@ -10,7 +10,6 @@ import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.example.sahil.project67.AlertDialogManager;
 import com.example.sahil.project67.CommuteFragment;
 import com.example.sahil.project67.MainActivity;
 import com.example.sahil.project67.R;
@@ -32,7 +31,11 @@ public class WeatherFinder {
     private String location = "Auckland";
     private Context context;
 
-    AlertDialogManager alert = new AlertDialogManager();
+    private double rain;
+    private double visibility;
+    private double wind;
+
+
 
     public WeatherFinder(Context context, String location) {
         this.location = location;
@@ -46,7 +49,7 @@ public class WeatherFinder {
     }
 
 
-    public void execute() throws JSONException {
+    public void execute()  {
 
         final String URL = createUrl("Auckland");
 
@@ -117,29 +120,38 @@ public class WeatherFinder {
 
         Log.d("DATA", "JSONDATA: " + jsonData);
 
-        double visibility = jsonData.getJSONObject("current_observation").getInt("visibility_km");
-        double rain = jsonData.getJSONObject("current_observation").getInt("precip_1hr_metric");
-        double wind = jsonData.getJSONObject("current_observation").getInt("wind_kph");
+        visibility = jsonData.getJSONObject("current_observation").getInt("visibility_km");
+        rain = jsonData.getJSONObject("current_observation").getInt("precip_1hr_metric");
+        wind = jsonData.getJSONObject("current_observation").getInt("wind_kph");
 
 
         Log.d("DATA", "Rain: " + rain);
         Log.d("DATA", "Visibility: " + visibility);
         Log.d("DATA", "Wind (km/h): " + wind);
 
-        if (rain != 0) {
-            Toast.makeText(context, "It's raining", Toast.LENGTH_LONG).show(); //context is broken
-        }
-
-        else {
-            Toast.makeText(context, "It's NOT raining", Toast.LENGTH_LONG).show();
-
-        }
-
-        alert.showAlertDialog(context, "Alert",
-                "this is alert", true);
-
+//        if (rain != 0) {
+//            Toast.makeText(context, "It's raining", Toast.LENGTH_LONG).show(); //context is broken
+//        }
+//
+//        else {
+//            Toast.makeText(context, "It's NOT raining", Toast.LENGTH_LONG).show();
+//
+//        }
 
     }
+
+    public double getRain() {
+        return rain;
+    }
+
+    public double getWind() {
+        return wind;
+    }
+
+    public double getVisibility() {
+        return visibility;
+    }
+
 
 
 }
