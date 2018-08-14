@@ -104,8 +104,10 @@ public class MainActivity extends FragmentActivity
 
         } else if (id == R.id.nav_prediction) {
 
-        } else if (id == R.id.nav_share) {
-
+        } else if (id == R.id.nav_login) {
+            fragmentManager.beginTransaction()
+                    .replace(R.id.content_frame, new LoginFragment())
+                    .commit();
         } else if (id == R.id.nav_send) {
 
         }
