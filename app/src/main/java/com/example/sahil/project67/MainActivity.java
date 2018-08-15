@@ -48,9 +48,9 @@ public class MainActivity extends FragmentActivity
         toggle.syncState();
 
         FragmentManager fragmentManager = getSupportFragmentManager();
-            fragmentManager.beginTransaction()
-                    .replace(R.id.content_frame, new CommuteFragment())
-                    .commit();
+        fragmentManager.beginTransaction()
+                .replace(R.id.content_frame, new LoginFragment())
+                .commit();
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
@@ -111,8 +111,6 @@ public class MainActivity extends FragmentActivity
                     .commit();
 
         } else if (id == R.id.nav_prediction) {
-
-        } else if (id == R.id.nav_share) {
 
         } else if (id == R.id.nav_send) {
 
