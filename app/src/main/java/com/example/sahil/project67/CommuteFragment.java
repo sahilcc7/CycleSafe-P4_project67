@@ -110,7 +110,7 @@ public class CommuteFragment extends Fragment implements OnMapReadyCallback, Dir
         }
 
         try {
-            new DirectionFinder(context, this, origin, destination).execute(); //Creates DirectionFinder OBJECT, calls execute() function
+            new DirectionFinder(context, this, origin, destination,0).execute(); //Creates DirectionFinder OBJECT, calls execute() function
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }

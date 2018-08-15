@@ -27,14 +27,16 @@ public class DirectionFinder  {
     private DirectionFinderListener listener;
     private String origin;
     private String destination;
+    private int exerciseFlag;
 
     Context context;
 
-    public DirectionFinder(Context context, DirectionFinderListener listener, String origin, String destination) {
+    public DirectionFinder(Context context, DirectionFinderListener listener, String origin, String destination,int exerciseFlag) {
         this.listener = listener;
         this.origin = origin;
         this.destination = destination;
         this.context = context;
+        this.exerciseFlag = exerciseFlag;
     }
 
     public void execute() throws UnsupportedEncodingException {
@@ -47,7 +49,13 @@ public class DirectionFinder  {
         String urlOrigin = URLEncoder.encode(origin, "utf-8");
         String urlDestination = URLEncoder.encode(destination, "utf-8");
 
-        return DIRECTION_URL_API + "&origin=" + urlOrigin + "&destination=" + urlDestination + "&alternatives=true" + "&mode=bicycling" + "&key=" + GOOGLE_API_KEY;
+        if (exerciseFlag == 0) {
+            return DIRECTION_URL_API + "&origin=" + urlOrigin + "&destination=" + urlDestination + "&alternatives=true" + "&mode=bicycling" + "&key=" + GOOGLE_API_KEY;
+        }
+        else {
+            return DIRECTION_URL_API + "&origin=" + urlOrigin + "&destination=" + urlOrigin + "&alternatives=true" + "&mode=bicycling&waypoints=normanby+road+auckland|"+ urlDestination + "|prospect+terrace+auckland" + "&key=" + GOOGLE_API_KEY;
+        }
+
     }
 
 
