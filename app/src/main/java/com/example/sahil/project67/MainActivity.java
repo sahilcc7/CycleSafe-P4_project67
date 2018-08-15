@@ -106,12 +106,9 @@ public class MainActivity extends FragmentActivity
 
         } else if (id == R.id.nav_workout) {
 
-            Intent intent = new Intent(MainActivity.this, CommuteActivity.class);
-            //EditText editText = (EditText) findViewById(R.id.editText);
-            //String message = editText.getText().toString();
-            //intent.putExtra(EXTRA_MESSAGE, message);
-            startActivity(intent);
-
+            fragmentManager.beginTransaction()
+                    .replace(R.id.content_frame, new ExerciseFragment())
+                    .commit();
 
         } else if (id == R.id.nav_prediction) {
 
