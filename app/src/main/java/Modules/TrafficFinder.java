@@ -99,72 +99,7 @@ public class TrafficFinder {
             }
         });
         thread.start();
-
-//        RequestQueue requestQueue = Volley.newRequestQueue(context);
-//        Log.d("HERE", "IN EXECUTE FUNCTION FROM TrafficFinder");
-//
-//
-//        JsonObjectRequest objectRequest = new JsonObjectRequest(
-//                Request.Method.GET,
-//                URL,
-//                null,
-//                new Response.Listener<JSONObject>() {
-//                    @Override
-//                    public void onResponse(JSONObject response) {
-//
-//                        try {
-//                            //Log.e("REST Response", response.toString());
-//
-//                            congestionString = (response.getJSONArray("resourceSets").getJSONObject(0).getJSONArray("resources").getJSONObject(0).get("trafficCongestion")).toString();
-//                            Log.d("CongestionString", congestionString);
-//
-//                            int tempScore = 0;
-//
-//                            if (congestionString.equals("Unknown")) {
-//                                tempScore = 0;
-//                            } else if (congestionString.equals("Light")) {
-//                                tempScore = 1;
-//                            } else if (congestionString.equals("Mild")) {
-//                                tempScore = 2;
-//                            } else if (congestionString.equals("Medium")) {
-//                                tempScore = 3;
-//                            } else if (congestionString.equals("Heavy")) {
-//                                tempScore = 4;
-//                            } else {
-//                                Log.d("ERROR", "UNDDEFINED!!!!!!!!!!!");
-//                            }
-//
-//                            congestionScore += tempScore;
-//
-//                            Log.d("CONGESTION", "CONGESTION SCORE: " + congestionScore);
-//
-//                        } catch (JSONException e) {
-//                            Log.d("CATCH", "IN CATCH");
-//                        }
-//                    }
-//                },
-//                new Response.ErrorListener() {
-//                    @Override
-//                    public void onErrorResponse(VolleyError error) {
-//                        Log.e("ERROR Response", error.toString());
-//
-//                    }
-//                }
-//        );
-//
-//        requestQueue.add(objectRequest);
-        //Log.e("REST Response", requestQueue.toString());
-
-        //return congestionScore;
-
-
     }
-
-
-
-
-
-
 
 
     private void parseJSon(String data) throws JSONException {

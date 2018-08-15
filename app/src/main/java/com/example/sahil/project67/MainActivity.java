@@ -1,5 +1,7 @@
 package com.example.sahil.project67;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.support.v4.app.FragmentManager;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -16,6 +18,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.content.Intent;
+import android.widget.Toast;
 
 
 public class MainActivity extends FragmentActivity
@@ -23,6 +26,7 @@ public class MainActivity extends FragmentActivity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -43,15 +47,13 @@ public class MainActivity extends FragmentActivity
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
-
         FragmentManager fragmentManager = getSupportFragmentManager();
-
         fragmentManager.beginTransaction()
                 .replace(R.id.content_frame, new LoginFragment())
                 .commit();
 
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
 
     }
 
@@ -96,19 +98,17 @@ public class MainActivity extends FragmentActivity
         FragmentManager fragmentManager = getSupportFragmentManager();
 
         if (id == R.id.nav_commute) {
-            // Handle the camera action
+
+
             fragmentManager.beginTransaction()
                     .replace(R.id.content_frame, new CommuteFragment())
                     .commit();
 
         } else if (id == R.id.nav_workout) {
 
-            Intent intent = new Intent(MainActivity.this, CommuteActivity.class);
-            //EditText editText = (EditText) findViewById(R.id.editText);
-            //String message = editText.getText().toString();
-            //intent.putExtra(EXTRA_MESSAGE, message);
-            startActivity(intent);
-
+            fragmentManager.beginTransaction()
+                    .replace(R.id.content_frame, new ExerciseFragment())
+                    .commit();
 
         } else if (id == R.id.nav_prediction) {
 
@@ -120,4 +120,31 @@ public class MainActivity extends FragmentActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
+    public void showAlert() {
+
+        AlertDialog.Builder builder1 = new AlertDialog.Builder(MainActivity.this);
+        builder1.setMessage("Warning! It's raining - Are you sure you want to bike?");
+        builder1.setCancelable(true);
+
+        builder1.setPositiveButton(
+                "Yes",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                });
+
+        builder1.setNegativeButton(
+                "No",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                });
+
+        AlertDialog alert11 = builder1.create();
+        alert11.show();
+    }
+
 }

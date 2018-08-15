@@ -6,12 +6,14 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Build;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.TextView;
@@ -38,8 +40,7 @@ import Modules.DirectionFinderListener;
 import Modules.PlacesAutoCompleteAdapter;
 import Modules.Route;
 
-public class CommuteActivity extends FragmentActivity implements OnMapReadyCallback, DirectionFinderListener {
-
+public class ExerciseFragment extends Fragment implements OnMapReadyCallback, DirectionFinderListener {
 
     private GoogleMap mMap;
     private Button btnFindPath;
@@ -55,21 +56,22 @@ public class CommuteActivity extends FragmentActivity implements OnMapReadyCallb
     );
 
 
+    @Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_commute1);
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
+
+        View view = inflater.inflate(R.layout.activity_exercise, null, false);
+
+        SupportMapFragment mapFragment = (SupportMapFragment) this.getChildFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-        btnFindPath = (Button) findViewById(R.id.btnFindPath);
-        etOrigin = (AutoCompleteTextView) findViewById(R.id.etOrigin);
-        etDestination = (AutoCompleteTextView) findViewById(R.id.etDestination);
+        btnFindPath = (Button) view.findViewById(R.id.btnFindPath);
+        etOrigin = (AutoCompleteTextView) view.findViewById(R.id.etOrigin);
+        etDestination = (AutoCompleteTextView) view.findViewById(R.id.etDestination);
 
-        etOrigin.setAdapter(new PlacesAutoCompleteAdapter(this, android.R.layout.simple_spinner_dropdown_item));
-        etDestination.setAdapter(new PlacesAutoCompleteAdapter(this, android.R.layout.simple_spinner_dropdown_item));
+        etOrigin.setAdapter(new PlacesAutoCompleteAdapter(getActivity(), android.R.layout.simple_spinner_dropdown_item));
+        etDestination.setAdapter(new PlacesAutoCompleteAdapter(getActivity(), android.R.layout.simple_spinner_dropdown_item));
 
 
         btnFindPath.setOnClickListener(new View.OnClickListener() {
@@ -78,25 +80,29 @@ public class CommuteActivity extends FragmentActivity implements OnMapReadyCallb
                 sendRequest();
             }
         });
+
+
+        return view;
+
     }
 
 
     //Execute below once "Find" button pressed
     private void sendRequest() {
-        Context context = getApplicationContext();
+        Context context = getActivity().getApplicationContext();
         String origin = etOrigin.getText().toString();
         String destination = etDestination.getText().toString();
         if (origin.isEmpty()) {
-            Toast.makeText(this, "Please enter origin address!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), "Please enter origin address!", Toast.LENGTH_SHORT).show();
             return;
         }
         if (destination.isEmpty()) {
-            Toast.makeText(this, "Please enter destination address!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), "Please enter destination address!", Toast.LENGTH_SHORT).show();
             return;
         }
 
         try {
-            new DirectionFinder(context, this, origin, destination).execute(); //Creates DirectionFinder OBJECT, calls execute() function
+            new DirectionFinder(context, this, origin, destination,1).execute(); //Creates DirectionFinder OBJECT, calls execute() function
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
@@ -104,8 +110,6 @@ public class CommuteActivity extends FragmentActivity implements OnMapReadyCallb
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-
-        Log.d("debug", "onMapRready!!!!!!!!!!!!!!!!!!");
 
         mMap = googleMap;
 
@@ -123,7 +127,7 @@ public class CommuteActivity extends FragmentActivity implements OnMapReadyCallb
                 .title("Auckland NZ")
                 .position(latlng)));
 
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
             //    ActivityCompat#requestPermissions
             // here to request the missing permissions, and then overriding
@@ -137,12 +141,12 @@ public class CommuteActivity extends FragmentActivity implements OnMapReadyCallb
     }
 
     public boolean checkLocationPermission() {
-        if (ContextCompat.checkSelfPermission(this,
+        if (ContextCompat.checkSelfPermission(getActivity(),
                 Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
 
             // Should we show an explanation?
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+            if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),
                     Manifest.permission.ACCESS_FINE_LOCATION)) {
 
                 // Show an expanation to the user *asynchronously* -- don't block
@@ -151,13 +155,13 @@ public class CommuteActivity extends FragmentActivity implements OnMapReadyCallb
                 //  TODO: Prompt with explanation!
 
                 //Prompt the user once explanation has been shown
-                ActivityCompat.requestPermissions(this,
+                ActivityCompat.requestPermissions(getActivity(),
                         new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                         MY_PERMISSIONS_REQUEST_LOCATION);
 
             } else {
                 // No explanation needed, we can request the permission.
-                ActivityCompat.requestPermissions(this,
+                ActivityCompat.requestPermissions(getActivity(),
                         new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                         MY_PERMISSIONS_REQUEST_LOCATION);
             }
@@ -180,14 +184,14 @@ public class CommuteActivity extends FragmentActivity implements OnMapReadyCallb
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
                     // permission was granted, yay!
-                    if (ActivityCompat.checkSelfPermission(this,
+                    if (ActivityCompat.checkSelfPermission(getActivity(),
                             Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                         mMap.setMyLocationEnabled(true);
                     }
                 } else {
                     // permission denied, boo! Disable the
                     // functionality that depends on this permission.
-                    Toast.makeText(this, "permission denied", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getActivity(), "permission denied", Toast.LENGTH_LONG).show();
                 }
                 return;
             }
@@ -199,7 +203,7 @@ public class CommuteActivity extends FragmentActivity implements OnMapReadyCallb
 
     @Override
     public void onDirectionFinderStart() {
-        progressDialog = ProgressDialog.show(this, "Please wait.",
+        progressDialog = ProgressDialog.show(getActivity(), "Please wait.",
                 "Finding safest route!", true);
 
         if (originMarkers != null) {
@@ -222,64 +226,76 @@ public class CommuteActivity extends FragmentActivity implements OnMapReadyCallb
     }
 
     @Override
-    public void onDirectionFinderSuccess(List<Route> routes,int safestRouteIndex) {
+    public void onDirectionFinderSuccess(List<Route> routes, int safestRouteIndex) {
 
         progressDialog.dismiss();
         polylinePaths = new ArrayList<>();
         originMarkers = new ArrayList<>();
         destinationMarkers = new ArrayList<>();
 
-        for (Route route : routes) {
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(route.startLocation, 16));
-            ((TextView) findViewById(R.id.tvDuration)).setText(route.duration.text);
-            ((TextView) findViewById(R.id.tvDistance)).setText(route.distance.text);
+        try {
+            for (Route route : routes) {
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(route.startLocation, 16));
+                ((TextView) getView().findViewById(R.id.tvDuration)).setText(route.duration.text);
+                ((TextView) getView().findViewById(R.id.tvDistance)).setText(route.distance.text);
+
+                originMarkers.add(mMap.addMarker(new MarkerOptions()
+                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.start_blue))
+                        .title(route.startAddress)
+                        .position(route.startLocation)));
+                destinationMarkers.add(mMap.addMarker(new MarkerOptions()
+                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.end_green))
+                        .title(route.endAddress)
+                        .position(route.endLocation)));
+
+
+                PolylineOptions polylineOptions = new PolylineOptions().
+                        geodesic(true).
+                        color(Color.RED).
+                        width(10);
+
+
+                for (int i = 0; i < route.points.size(); i++) {
+                    polylineOptions.add(route.points.get(i));
+                }
+
+                polylinePaths.add(mMap.addPolyline(polylineOptions));
+
+            }
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(routes.get(safestRouteIndex).startLocation, 16));
+            ((TextView) getView().findViewById(R.id.tvDuration)).setText(routes.get(safestRouteIndex).duration.text);
+            ((TextView) getView().findViewById(R.id.tvDistance)).setText(routes.get(safestRouteIndex).distance.text);
 
             originMarkers.add(mMap.addMarker(new MarkerOptions()
                     .icon(BitmapDescriptorFactory.fromResource(R.drawable.start_blue))
-                    .title(route.startAddress)
-                    .position(route.startLocation)));
+                    .title(routes.get(safestRouteIndex).startAddress)
+                    .position(routes.get(safestRouteIndex).startLocation)));
             destinationMarkers.add(mMap.addMarker(new MarkerOptions()
                     .icon(BitmapDescriptorFactory.fromResource(R.drawable.end_green))
-                    .title(route.endAddress)
-                    .position(route.endLocation)));
-
+                    .title(routes.get(safestRouteIndex).endAddress)
+                    .position(routes.get(safestRouteIndex).endLocation)));
 
             PolylineOptions polylineOptions = new PolylineOptions().
                     geodesic(true).
-                    color(Color.RED).
-                    width(10);
+                    color(Color.BLUE).
+                    width(20);
 
-
-            for (int i = 0; i < route.points.size(); i++) {
-                polylineOptions.add(route.points.get(i));
-            }
+            for (int i = 0; i < routes.get(safestRouteIndex).points.size(); i++)
+                polylineOptions.add(routes.get(safestRouteIndex).points.get(i));
 
             polylinePaths.add(mMap.addPolyline(polylineOptions));
+        } catch (Exception e) {
+            Toast.makeText(getActivity(), "GOOGLE API PROBLEM", Toast.LENGTH_LONG).show();
+            e.printStackTrace();
         }
+    }
 
 
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(routes.get(safestRouteIndex).startLocation, 16));
-        ((TextView) findViewById(R.id.tvDuration)).setText(routes.get(safestRouteIndex).duration.text);
-        ((TextView) findViewById(R.id.tvDistance)).setText(routes.get(safestRouteIndex).distance.text);
-
-        originMarkers.add(mMap.addMarker(new MarkerOptions()
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.start_blue))
-                .title(routes.get(safestRouteIndex).startAddress)
-                .position(routes.get(safestRouteIndex).startLocation)));
-        destinationMarkers.add(mMap.addMarker(new MarkerOptions()
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.end_green))
-                .title(routes.get(safestRouteIndex).endAddress)
-                .position(routes.get(safestRouteIndex).endLocation)));
-
-        PolylineOptions polylineOptions = new PolylineOptions().
-                geodesic(true).
-                color(Color.BLUE).
-                width(10);
-
-        for (int i = 0; i < routes.get(safestRouteIndex).points.size(); i++)
-            polylineOptions.add(routes.get(safestRouteIndex).points.get(i));
-
-        polylinePaths.add(mMap.addPolyline(polylineOptions));
+    private void initializeMap() {
+        if (mMap == null) {
+            SupportMapFragment mapFrag = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
+            //mapFrag.getMapAsync(this);
+        }
     }
 
 
