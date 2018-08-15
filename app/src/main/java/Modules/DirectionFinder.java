@@ -100,7 +100,7 @@ public class DirectionFinder  {
         JSONArray jsonRoutes = jsonData.getJSONArray("routes");
         int safestRouteIndex = 0;
 
-        Log.d("data","data: " + data);
+        //Log.d("data","data: " + data);
         //Log.d("data2","data: " + jsonData);
 
 
@@ -174,6 +174,9 @@ public class DirectionFinder  {
                 safestRouteIndex = k + 1;
             }
         }
+
+
+
 
         listener.onDirectionFinderSuccess(routes,safestRouteIndex);
     }

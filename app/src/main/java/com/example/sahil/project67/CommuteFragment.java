@@ -1,7 +1,9 @@
 package com.example.sahil.project67;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Color;
@@ -47,6 +49,7 @@ import Modules.DirectionFinder;
 import Modules.DirectionFinderListener;
 import Modules.PlacesAutoCompleteAdapter;
 import Modules.Route;
+import Modules.WeatherFinder;
 
 
 public class CommuteFragment extends Fragment implements OnMapReadyCallback, DirectionFinderListener {
@@ -207,8 +210,6 @@ public class CommuteFragment extends Fragment implements OnMapReadyCallback, Dir
         }
     }
 
-
-
     @Override
     public void onDirectionFinderStart() {
         progressDialog = ProgressDialog.show(getActivity(), "Please wait.",
@@ -235,6 +236,7 @@ public class CommuteFragment extends Fragment implements OnMapReadyCallback, Dir
 
     @Override
     public void onDirectionFinderSuccess(List<Route> routes, int safestRouteIndex) {
+
 
         progressDialog.dismiss();
         polylinePaths = new ArrayList<>();
@@ -293,9 +295,12 @@ public class CommuteFragment extends Fragment implements OnMapReadyCallback, Dir
 
             polylinePaths.add(mMap.addPolyline(polylineOptions));
         } catch (Exception e) {
-            Toast.makeText(getActivity(), "GOOGLE IS FUCKING US", Toast.LENGTH_LONG).show();
+            Toast.makeText(getActivity(), "GOOGLE API PROBLEM", Toast.LENGTH_LONG).show();
             e.printStackTrace();
         }
+
+        showWeatherAlert();
+
     }
 
 
@@ -304,6 +309,46 @@ public class CommuteFragment extends Fragment implements OnMapReadyCallback, Dir
             SupportMapFragment mapFrag = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
             //mapFrag.getMapAsync(this);
         }
+    }
+
+    public void showWeatherAlert() {
+
+        WeatherFinder weatherFinder = new WeatherFinder(getContext(), "Auckland"); //HARDCODED
+
+        weatherFinder.execute();
+
+        AlertDialog.Builder builder1 = new AlertDialog.Builder(getContext());
+
+
+        if (weatherFinder.getRain() == 0) {
+            builder1.setMessage("No rain!");
+        }
+        else {
+            builder1.setMessage("Warning! It's raining - Are you sure you want to bike?");
+        }
+
+        builder1.setCancelable(true);
+
+        builder1.setPositiveButton(
+                "Yes",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                });
+
+        builder1.setNegativeButton(
+                "No",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                });
+
+        AlertDialog alert11 = builder1.create();
+        alert11.show();
+
+
     }
 
 
