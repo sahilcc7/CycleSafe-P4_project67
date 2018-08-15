@@ -285,7 +285,7 @@ public class ExerciseFragment extends Fragment implements OnMapReadyCallback, Di
 
             polylinePaths.add(mMap.addPolyline(polylineOptions));
         } catch (Exception e) {
-            Toast.makeText(getActivity(), "GOOGLE IS FUCKING US", Toast.LENGTH_LONG).show();
+            Toast.makeText(getActivity(), "GOOGLE API PROBLEM", Toast.LENGTH_LONG).show();
             e.printStackTrace();
         }
     }
