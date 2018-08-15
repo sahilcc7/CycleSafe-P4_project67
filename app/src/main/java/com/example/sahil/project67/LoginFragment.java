@@ -24,7 +24,6 @@ public class LoginFragment extends Fragment {
         createNewAccountButton = (Button) view.findViewById(R.id.newAccountButton);
 
 
-
         return view;
     }
 }

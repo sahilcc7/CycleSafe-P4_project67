@@ -45,6 +45,14 @@ public class MainActivity extends FragmentActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        FragmentManager fragmentManager = getSupportFragmentManager();
+
+        fragmentManager.beginTransaction()
+                .replace(R.id.content_frame, new LoginFragment())
+                .commit();
+
+
     }
 
     @Override
