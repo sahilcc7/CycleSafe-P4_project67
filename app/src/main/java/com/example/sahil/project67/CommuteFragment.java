@@ -130,6 +130,20 @@ public class CommuteFragment extends Fragment implements OnMapReadyCallback, Dir
 
         mMap.setMyLocationEnabled(true);
 
+        try {
+            // Customise the styling of the base map using a JSON object defined
+            // in a raw resource file.
+            boolean success = googleMap.setMapStyle(
+                    MapStyleOptions.loadRawResourceStyle(
+                            getContext(), R.raw.style_json));
+
+            if (!success) {
+                Log.e("StyleError", "Style parsing failed.");
+            }
+        } catch (Resources.NotFoundException e) {
+            Log.e("StyleErrors", "Can't find style. Error: ", e);
+        }
+
         LatLng latlng = new LatLng(-36.8816822, 174.7559136);
 
         etOrigin.setText("Grange Road, Mount Eden, Auckland, New Zealand");
