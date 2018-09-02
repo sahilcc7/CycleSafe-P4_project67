@@ -83,8 +83,7 @@ public class PlacesAutoCompleteAdapter extends ArrayAdapter<String> implements F
         HttpURLConnection conn = null;
         StringBuilder jsonResults = new StringBuilder();
         try {
-            String sb = PLACES_API_BASE + TYPE_AUTOCOMPLETE + OUT_JSON + "?input=" + URLEncoder.encode(input, "utf8") +
-                    "&sensor=true&key=" + API_KEY;
+            String sb = PLACES_API_BASE + TYPE_AUTOCOMPLETE + OUT_JSON + "?input=" + URLEncoder.encode(input, "utf8") + "&components=country:nz" + "&sensor=true&key=" + API_KEY;
 
             URL url = new URL(sb);
             conn = (HttpURLConnection) url.openConnection();

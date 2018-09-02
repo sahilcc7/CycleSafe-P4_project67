@@ -8,6 +8,8 @@ import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Build;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.app.ProgressDialog;
@@ -63,6 +65,7 @@ public class CommuteFragment extends Fragment implements OnMapReadyCallback, Dir
     private List<Polyline> polylinePaths = new ArrayList<>();
     private ProgressDialog progressDialog;
 
+
     private com.google.android.gms.maps.model.LatLngBounds LatLngBounds = new LatLngBounds(
             new LatLng(-40, -168), new LatLng(71, 136)
     );
@@ -85,6 +88,7 @@ public class CommuteFragment extends Fragment implements OnMapReadyCallback, Dir
         etDestination.setAdapter(new PlacesAutoCompleteAdapter(getActivity(), android.R.layout.simple_spinner_dropdown_item));
 
 
+
         btnFindPath.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -92,14 +96,13 @@ public class CommuteFragment extends Fragment implements OnMapReadyCallback, Dir
             }
         });
 
-
         return view;
 
     }
 
 
     //Execute below once "Find" button pressed
-    private void sendRequest() {
+    public void sendRequest() {
         Context context = getActivity().getApplicationContext();
         String origin = etOrigin.getText().toString();
         String destination = etDestination.getText().toString();
@@ -335,7 +338,7 @@ public class CommuteFragment extends Fragment implements OnMapReadyCallback, Dir
 
 
         if (weatherFinder.getRain() == 0) {
-            builder1.setMessage("No rain!");
+            builder1.setMessage("\nNo rain!\n Good Visibility!\n No Headwind!");
         }
         else {
             builder1.setMessage("Warning! It's raining - Are you sure you want to bike?");
@@ -344,7 +347,7 @@ public class CommuteFragment extends Fragment implements OnMapReadyCallback, Dir
         builder1.setCancelable(true);
 
         builder1.setPositiveButton(
-                "Yes",
+                "Continue",
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         dialog.cancel();
@@ -352,7 +355,7 @@ public class CommuteFragment extends Fragment implements OnMapReadyCallback, Dir
                 });
 
         builder1.setNegativeButton(
-                "No",
+                "",
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         dialog.cancel();
