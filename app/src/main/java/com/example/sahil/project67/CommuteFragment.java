@@ -261,34 +261,7 @@ public class CommuteFragment extends Fragment implements OnMapReadyCallback, Dir
         destinationMarkers = new ArrayList<>();
 
         try {
-            for (Route route : routes) {
-                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(route.startLocation, 16));
-                ((TextView) getView().findViewById(R.id.tvDuration)).setText(route.duration.text);
-                ((TextView) getView().findViewById(R.id.tvDistance)).setText(route.distance.text);
 
-                originMarkers.add(mMap.addMarker(new MarkerOptions()
-                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.start_blue))
-                        .title(route.startAddress)
-                        .position(route.startLocation)));
-                destinationMarkers.add(mMap.addMarker(new MarkerOptions()
-                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.end_green))
-                        .title(route.endAddress)
-                        .position(route.endLocation)));
-
-
-                PolylineOptions polylineOptions = new PolylineOptions().
-                        geodesic(true).
-                        color(Color.RED).
-                        width(10);
-
-
-                for (int i = 0; i < route.points.size(); i++) {
-                    polylineOptions.add(route.points.get(i));
-                }
-
-                polylinePaths.add(mMap.addPolyline(polylineOptions));
-
-            }
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(routes.get(safestRouteIndex).startLocation, 16));
             ((TextView) getView().findViewById(R.id.tvDuration)).setText(routes.get(safestRouteIndex).duration.text);
             ((TextView) getView().findViewById(R.id.tvDistance)).setText(routes.get(safestRouteIndex).distance.text);
@@ -304,7 +277,7 @@ public class CommuteFragment extends Fragment implements OnMapReadyCallback, Dir
 
             PolylineOptions polylineOptions = new PolylineOptions().
                     geodesic(true).
-                    color(Color.BLUE).
+                    color(Color.GREEN).
                     width(20);
 
             for (int i = 0; i < routes.get(safestRouteIndex).points.size(); i++)
