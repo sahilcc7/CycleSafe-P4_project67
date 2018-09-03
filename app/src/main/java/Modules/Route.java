@@ -12,6 +12,6 @@ public class Route {
     public LatLng endLocation;
     public String startAddress;
     public LatLng startLocation;
-    public int bingCongestionScore;
+    public double bingCongestionScore;
     public List<LatLng> points;
 }

@@ -19,6 +19,8 @@ public class TrafficFinder {
     private static final String TRAFFIC_API_URL = "http://dev.virtualearth.net/REST/V1/Routes/Driving?";
     private static final String BING_API_KEY = "AqS4Ne5sT_qCkBBMTzu9PrT0nTzTkI0XDl8Npw6AEr1DsvV0UheG0XT4j20CNXuc";
 
+    public static int waitFlag = 0;
+
     private Coordinate wp1;
     private Coordinate wp2;
 
@@ -42,7 +44,7 @@ public class TrafficFinder {
     }
 
     public void execute(Coordinate wp1, Coordinate wp2) throws JSONException {
-
+        waitFlag = 1;
         final String URL = createUrl(wp1, wp2);
 
         Thread thread = new Thread(new Runnable(){
@@ -104,8 +106,12 @@ public class TrafficFinder {
 
     private void parseJSon(String data) throws JSONException {
 
-        if (data == null)
+
+        if (data == null) {
+            Log.d("data", "THIS IS NULL");
             return;
+        }
+
 
         JSONObject jsonData = new JSONObject(data);
 
@@ -133,14 +139,15 @@ public class TrafficFinder {
 
         congestionScore += tempScore;
 
-        //Log.d("CONGESTION", "CONGESTION SCORE: " + congestionScore);
+        waitFlag = 0;
 
-
+        Log.d("CONGESTION", "CONGESTION SCORE: " + congestionScore);
         //listener.onDirectionFinderSuccess(routes);
     }
 
 
     public int getCongestionScore() {
+        Log.d("CONGESTION", "CONGESTION SCORE-------------------------- " + congestionScore);
         return congestionScore;
 
     }

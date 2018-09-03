@@ -147,10 +147,14 @@ public class DirectionFinder  {
                 wp2_end.setCoordinate(tempEndLat, tempEndLong);
 
                 trafficFinderNew.execute(wp1_start, wp2_end);
+
+                while (trafficFinderNew.waitFlag == 1) {
+                    Log.d("LOOP","WAITING");
+                }
             }
 
             route.bingCongestionScore = trafficFinderNew.getCongestionScore();
-            Log.d("Route[0]", "Score from ROUTE: " + route.bingCongestionScore);
+            Log.d("Route", "Score from ROUTE: " + route.bingCongestionScore);
 
 
             JSONObject jsonDistance = jsonLeg.getJSONObject("distance");
@@ -172,9 +176,9 @@ public class DirectionFinder  {
 
             route.bingCongestionScore = route.bingCongestionScore/jsonSteps.length(); //This calculates the average 'safety' score based on congestion
             Log.d("AVG", "Average Congestion: " + route.bingCongestionScore);
+            trafficFinderNew.resetCongestionScore(); //Reset congestion score because new route
 
         }
-        trafficFinderNew.resetCongestionScore(); //Reset congestion score because new route
 
 
         for (int k = 0; k < routes.size()-1; k++) {
