@@ -53,7 +53,7 @@ public class DirectionFinder  {
             return DIRECTION_URL_API + "&origin=" + urlOrigin + "&destination=" + urlDestination + "&alternatives=true" + "&mode=bicycling" + "&key=" + GOOGLE_API_KEY;
         }
         else {
-            return DIRECTION_URL_API + "&origin=" + urlOrigin + "&destination=" + urlOrigin + "&alternatives=true" + "&mode=bicycling&waypoints=normanby+road+auckland|"+ urlDestination + "|prospect+terrace+auckland" + "&key=" + GOOGLE_API_KEY;
+            return DIRECTION_URL_API + "&origin=" + urlOrigin + "&destination=" + urlOrigin + "&alternatives=true" + "&mode=bicycling&waypoints="+ urlDestination + "&key=" + GOOGLE_API_KEY;
         }
 
     }

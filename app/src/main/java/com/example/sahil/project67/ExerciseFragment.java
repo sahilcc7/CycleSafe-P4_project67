@@ -6,6 +6,9 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Color;
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -40,6 +43,8 @@ import java.util.List;
 
 import Modules.DirectionFinder;
 import Modules.DirectionFinderListener;
+import Modules.Distance;
+import Modules.Duration;
 import Modules.PlacesAutoCompleteAdapter;
 import Modules.Route;
 
@@ -47,12 +52,12 @@ public class ExerciseFragment extends Fragment implements OnMapReadyCallback, Di
 
     private GoogleMap mMap;
     private Button btnFindPath;
-    private AutoCompleteTextView etOrigin;
-    private AutoCompleteTextView etDestination;
+    private AutoCompleteTextView etDistance;
     private List<Marker> originMarkers = new ArrayList<>();
     private List<Marker> destinationMarkers = new ArrayList<>();
     private List<Polyline> polylinePaths = new ArrayList<>();
     private ProgressDialog progressDialog;
+    private double locationLong, locationLat;
 
     private com.google.android.gms.maps.model.LatLngBounds LatLngBounds = new LatLngBounds(
             new LatLng(-40, -168), new LatLng(71, 136)
@@ -70,12 +75,17 @@ public class ExerciseFragment extends Fragment implements OnMapReadyCallback, Di
         mapFragment.getMapAsync(this);
 
         btnFindPath = (Button) view.findViewById(R.id.btnFindPath);
-        etOrigin = (AutoCompleteTextView) view.findViewById(R.id.etOrigin);
-        etDestination = (AutoCompleteTextView) view.findViewById(R.id.etDestination);
+        etDistance = (AutoCompleteTextView) view.findViewById(R.id.distanceIn);
 
-        etOrigin.setAdapter(new PlacesAutoCompleteAdapter(getActivity(), android.R.layout.simple_spinner_dropdown_item));
-        etDestination.setAdapter(new PlacesAutoCompleteAdapter(getActivity(), android.R.layout.simple_spinner_dropdown_item));
+        Context context = this.getActivity();
 
+        LocationManager locationManager = (LocationManager)
+                context.getSystemService(Context.LOCATION_SERVICE);
+        Criteria criteria = new Criteria();
+        Location location = locationManager.getLastKnownLocation(locationManager.getBestProvider(criteria,false));
+
+        locationLat = location.getLatitude();
+        locationLong = location.getLongitude();
 
         btnFindPath.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -93,14 +103,15 @@ public class ExerciseFragment extends Fragment implements OnMapReadyCallback, Di
     //Execute below once "Find" button pressed
     private void sendRequest() {
         Context context = getActivity().getApplicationContext();
-        String origin = etOrigin.getText().toString();
-        String destination = etDestination.getText().toString();
-        if (origin.isEmpty()) {
-            Toast.makeText(getActivity(), "Please enter origin address!", Toast.LENGTH_SHORT).show();
-            return;
-        }
+        String destination = etDistance.getText().toString();
+
+        String latString = String.valueOf(locationLat);
+        String longString = String.valueOf(locationLong);
+        String origin =  latString + "," + longString;
+
+
         if (destination.isEmpty()) {
-            Toast.makeText(getActivity(), "Please enter destination address!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), "Please enter workout distance.", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -138,7 +149,7 @@ public class ExerciseFragment extends Fragment implements OnMapReadyCallback, Di
 
         LatLng latlng = new LatLng(-36.8816822, 174.7559136);
 
-        etOrigin.setText("Grange Road, Mount Eden, Auckland, New Zealand");
+        //etOrigin.setText("Grange Road, Mount Eden, Auckland, New Zealand");
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latlng, 15));
         originMarkers.add(mMap.addMarker(new MarkerOptions()
                 .title("Auckland NZ")
@@ -253,6 +264,23 @@ public class ExerciseFragment extends Fragment implements OnMapReadyCallback, Di
         try {
 
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(routes.get(safestRouteIndex).startLocation, 16));
+
+            Duration actualDuration = routes.get(safestRouteIndex).duration;
+
+            Log.d("Duration", "duration value is this:" + actualDuration.value);
+            Log.d("Duration", "duration text is this:" + actualDuration.text);
+
+            //actualDuration.value = actualDuration.value * 2;
+            //actualDuration.text = String.valueOf(actualDuration.value);
+
+            Distance actualDistance = routes.get(safestRouteIndex).distance;
+
+            Log.d("Distance", "Distance value is this:" + actualDistance.value);
+            Log.d("Distance", "Distance text is this:" + actualDistance.text);
+
+            //actualDistance.value = actualDistance.value * 2;
+            //actualDistance.text = String.valueOf(actualDistance.value);
+
             ((TextView) getView().findViewById(R.id.tvDuration)).setText(routes.get(safestRouteIndex).duration.text);
             ((TextView) getView().findViewById(R.id.tvDistance)).setText(routes.get(safestRouteIndex).distance.text);
 
