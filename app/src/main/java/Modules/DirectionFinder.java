@@ -48,12 +48,34 @@ public class DirectionFinder  {
     private String createUrl() throws UnsupportedEncodingException {
         String urlOrigin = URLEncoder.encode(origin, "utf-8");
         String urlDestination = URLEncoder.encode(destination, "utf-8");
+        int distance = Integer.parseInt(destination);
+        if (distance < 4) {
+            urlDestination = "Wintergarden Rd, Parnell, Auckland 1010"; //2k
+        }
+        else if (distance < 6) {
+            urlDestination = "Ayr Reserve, Parnell";
+        }
+        else if (distance < 8) {
+            urlDestination = "Albert Park, Bowen Ln, Auckland"; //6k
+        }
+        else if (distance < 9) {
+            urlDestination = "Grey Lynn Park, 75 Dryden St, Grey Lynn, Auckland 1021"; // 8k
+        }
+        else {
+            urlDestination = "Cornwall Park, Green Ln W, Epsom, Auckland 1051"; //10k
+        }
+
 
         if (exerciseFlag == 0) {
             return DIRECTION_URL_API + "&origin=" + urlOrigin + "&destination=" + urlDestination + "&alternatives=true" + "&mode=bicycling" + "&key=" + GOOGLE_API_KEY;
         }
         else {
-            return DIRECTION_URL_API + "&origin=" + urlOrigin + "&destination=" + urlOrigin + "&alternatives=true" + "&mode=bicycling&waypoints=normanby+road+auckland|"+ urlDestination + "|prospect+terrace+auckland" + "&key=" + GOOGLE_API_KEY;
+            if (distance > 8) {
+                return DIRECTION_URL_API + "&origin=" + urlOrigin + "&destination=" + urlOrigin + "&alternatives=true" + "&mode=bicycling&waypoints="+ urlDestination + "|20+Maungawhau+Rd,+Epsom,+Auckland&key=" + GOOGLE_API_KEY;
+            }
+            else {
+                return DIRECTION_URL_API + "&origin=" + urlOrigin + "&destination=" + urlOrigin + "&alternatives=true" + "&mode=bicycling&waypoints="+ urlDestination + "|98+park+rd+grafton&key=" + GOOGLE_API_KEY;
+            }
         }
 
     }
