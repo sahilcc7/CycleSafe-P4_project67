@@ -24,7 +24,6 @@ public class LoginFragment extends Fragment {
 
 
         loginButton = (Button) view.findViewById(R.id.loginButton);
-        createNewAccountButton = (Button) view.findViewById(R.id.newAccountButton);
 
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -35,14 +34,6 @@ public class LoginFragment extends Fragment {
             }
         });
 
-        createNewAccountButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FragmentTransaction fr = getFragmentManager().beginTransaction();
-                fr.replace(R.id.content_frame,new CommuteFragment());
-                fr.commit();
-            }
-        });
 
         return view;
     }
