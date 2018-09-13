@@ -35,11 +35,14 @@ import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.io.UnsupportedEncodingException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
 import Modules.DirectionFinder;
 import Modules.DirectionFinderListener;
+import Modules.Distance;
+import Modules.Duration;
 import Modules.PlacesAutoCompleteAdapter;
 import Modules.Route;
 
@@ -47,7 +50,6 @@ public class ExerciseFragment extends Fragment implements OnMapReadyCallback, Di
 
     private GoogleMap mMap;
     private Button btnFindPath;
-    private AutoCompleteTextView etOrigin;
     private AutoCompleteTextView etDestination;
     private List<Marker> originMarkers = new ArrayList<>();
     private List<Marker> destinationMarkers = new ArrayList<>();
@@ -70,11 +72,8 @@ public class ExerciseFragment extends Fragment implements OnMapReadyCallback, Di
         mapFragment.getMapAsync(this);
 
         btnFindPath = (Button) view.findViewById(R.id.btnFindPath);
-        etOrigin = (AutoCompleteTextView) view.findViewById(R.id.etOrigin);
         etDestination = (AutoCompleteTextView) view.findViewById(R.id.etDestination);
 
-        etOrigin.setAdapter(new PlacesAutoCompleteAdapter(getActivity(), android.R.layout.simple_spinner_dropdown_item));
-        etDestination.setAdapter(new PlacesAutoCompleteAdapter(getActivity(), android.R.layout.simple_spinner_dropdown_item));
 
 
         btnFindPath.setOnClickListener(new View.OnClickListener() {
@@ -93,7 +92,7 @@ public class ExerciseFragment extends Fragment implements OnMapReadyCallback, Di
     //Execute below once "Find" button pressed
     private void sendRequest() {
         Context context = getActivity().getApplicationContext();
-        String origin = etOrigin.getText().toString();
+        String origin = "University of Auckland, Newmarket";
         String destination = etDestination.getText().toString();
         if (origin.isEmpty()) {
             Toast.makeText(getActivity(), "Please enter origin address!", Toast.LENGTH_SHORT).show();
@@ -138,7 +137,6 @@ public class ExerciseFragment extends Fragment implements OnMapReadyCallback, Di
 
         LatLng latlng = new LatLng(-36.8816822, 174.7559136);
 
-        etOrigin.setText("Grange Road, Mount Eden, Auckland, New Zealand");
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latlng, 15));
         originMarkers.add(mMap.addMarker(new MarkerOptions()
                 .title("Auckland NZ")
@@ -253,8 +251,26 @@ public class ExerciseFragment extends Fragment implements OnMapReadyCallback, Di
         try {
 
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(routes.get(safestRouteIndex).startLocation, 16));
-            ((TextView) getView().findViewById(R.id.tvDuration)).setText(routes.get(safestRouteIndex).duration.text);
-            ((TextView) getView().findViewById(R.id.tvDistance)).setText(routes.get(safestRouteIndex).distance.text);
+
+            Duration actualDuration = routes.get(safestRouteIndex).duration;
+            int durationValue = actualDuration.value * 2;
+            durationValue = (int)Math.ceil((double)durationValue / 60);
+
+            Distance actualDistance = routes.get(safestRouteIndex).distance;
+            float distanceValue = actualDistance.value * 2;
+            distanceValue = distanceValue / (float)1000;
+
+            DecimalFormat df = new DecimalFormat("#.#");
+            String distanceString = df.format(distanceValue);
+
+
+
+
+
+
+
+            ((TextView) getView().findViewById(R.id.tvDuration)).setText(durationValue + " mins");
+            ((TextView) getView().findViewById(R.id.tvDistance)).setText(distanceString + " km");
 
             originMarkers.add(mMap.addMarker(new MarkerOptions()
                     .icon(BitmapDescriptorFactory.fromResource(R.drawable.start_blue))
