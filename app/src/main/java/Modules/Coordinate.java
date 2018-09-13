@@ -1,6 +1,7 @@
 package Modules;
 
-public class Coordinate {
+public class
+Coordinate {
 
     private double latitude;
     private double longitude;

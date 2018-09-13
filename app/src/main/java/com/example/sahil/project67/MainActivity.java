@@ -120,6 +120,11 @@ implements NavigationView.OnNavigationItemSelectedListener {
 
         } else if (id == R.id.nav_prediction) {
 
+            fragmentManager.beginTransaction()
+                    .replace(R.id.content_frame, new PredictionFragment())
+                    .commit();
+
+
         } else if (id == R.id.nav_send) {
 
         }
