@@ -44,6 +44,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.android.gms.location.LocationServices;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
@@ -70,6 +71,8 @@ public class CommuteFragment extends Fragment implements OnMapReadyCallback, Dir
     private List<Polyline> polylinePaths = new ArrayList<>();
     private ProgressDialog progressDialog;
     private double locationLong, locationLat;
+    //private static final int MY_PERMISSION_ACCESS_COARSE_LOCATION = 11;
+
 
     WeatherFinder weatherFinder = new WeatherFinder(getContext(), "Auckland");
 
@@ -90,9 +93,15 @@ public class CommuteFragment extends Fragment implements OnMapReadyCallback, Dir
 
         Context context = this.getActivity();
 
+
+
         LocationManager locationManager = (LocationManager)
                 context.getSystemService(Context.LOCATION_SERVICE);
         Criteria criteria = new Criteria();
+
+
+
+
         Location location = locationManager.getLastKnownLocation(locationManager.getBestProvider(criteria,false));
 
         locationLat = location.getLatitude();
