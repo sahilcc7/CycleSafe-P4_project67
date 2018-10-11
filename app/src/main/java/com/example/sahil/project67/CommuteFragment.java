@@ -7,6 +7,9 @@ import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Color;
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Build;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -23,6 +26,8 @@ import android.view.ViewGroup;
 import com.google.android.gms.maps.GoogleMap;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 
@@ -64,6 +69,9 @@ public class CommuteFragment extends Fragment implements OnMapReadyCallback, Dir
     private List<Marker> destinationMarkers = new ArrayList<>();
     private List<Polyline> polylinePaths = new ArrayList<>();
     private ProgressDialog progressDialog;
+    private double locationLong, locationLat;
+
+    WeatherFinder weatherFinder = new WeatherFinder(getContext(), "Auckland");
 
 
     private com.google.android.gms.maps.model.LatLngBounds LatLngBounds = new LatLngBounds(
@@ -79,6 +87,17 @@ public class CommuteFragment extends Fragment implements OnMapReadyCallback, Dir
         SupportMapFragment mapFragment = (SupportMapFragment) this.getChildFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+        Context context = this.getActivity();
+
+        LocationManager locationManager = (LocationManager)
+                context.getSystemService(Context.LOCATION_SERVICE);
+        Criteria criteria = new Criteria();
+        Location location = locationManager.getLastKnownLocation(locationManager.getBestProvider(criteria,false));
+
+        locationLat = location.getLatitude();
+        locationLong = location.getLongitude();
+
 
         btnFindPath = (Button) view.findViewById(R.id.btnFindPath);
         etOrigin = (AutoCompleteTextView) view.findViewById(R.id.etOrigin);
@@ -104,11 +123,16 @@ public class CommuteFragment extends Fragment implements OnMapReadyCallback, Dir
     //Execute below once "Find" button pressed
     public void sendRequest() {
         Context context = getActivity().getApplicationContext();
+
+        String latString = String.valueOf(locationLat);
+        String longString = String.valueOf(locationLong);
         String origin = etOrigin.getText().toString();
         String destination = etDestination.getText().toString();
+
         if (origin.isEmpty()) {
-            Toast.makeText(getActivity(), "Please enter origin address!", Toast.LENGTH_SHORT).show();
-            return;
+            origin =  latString + "," + longString;
+            //Toast.makeText(getActivity(), "Please enter origin address!", Toast.LENGTH_SHORT).show();
+            //return;
         }
         if (destination.isEmpty()) {
             Toast.makeText(getActivity(), "Please enter destination address!", Toast.LENGTH_SHORT).show();
@@ -116,6 +140,8 @@ public class CommuteFragment extends Fragment implements OnMapReadyCallback, Dir
         }
 
         try {
+
+            weatherFinder.execute();
             new DirectionFinder(context, this, origin, destination,0).execute(); //Creates DirectionFinder OBJECT, calls execute() function
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
@@ -149,7 +175,7 @@ public class CommuteFragment extends Fragment implements OnMapReadyCallback, Dir
 
         LatLng latlng = new LatLng(-36.8816822, 174.7559136);
 
-        etOrigin.setText("Grange Road, Mount Eden, Auckland, New Zealand");
+        etOrigin.setText("");
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latlng, 15));
         originMarkers.add(mMap.addMarker(new MarkerOptions()
                 .title("Auckland NZ")
@@ -262,7 +288,7 @@ public class CommuteFragment extends Fragment implements OnMapReadyCallback, Dir
 
         try {
 
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(routes.get(safestRouteIndex).startLocation, 16));
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(routes.get(safestRouteIndex).startLocation, 13));
             ((TextView) getView().findViewById(R.id.tvDuration)).setText(routes.get(safestRouteIndex).duration.text);
             ((TextView) getView().findViewById(R.id.tvDistance)).setText(routes.get(safestRouteIndex).distance.text);
 
@@ -303,19 +329,41 @@ public class CommuteFragment extends Fragment implements OnMapReadyCallback, Dir
 
     public void showWeatherAlert() {
 
-        WeatherFinder weatherFinder = new WeatherFinder(getContext(), "Auckland"); //HARDCODED
 
-        weatherFinder.execute();
 
         AlertDialog.Builder builder1 = new AlertDialog.Builder(getContext());
 
+        Log.d("WEATHER", "weatherRain:" + weatherFinder.getVisibility());
+
+        String weatherRain;
+        String weatherVisibility;
+        String weatherWind;
+
 
         if (weatherFinder.getRain() == 0) {
-            builder1.setMessage("\nNo rain!\n Good Visibility!\n No Headwind!");
+            weatherRain = "No Rain!";
         }
         else {
-            builder1.setMessage("Warning! It's raining - Are you sure you want to bike?");
+            weatherRain = "It has been raining, roads might be slippery";
         }
+
+        if (weatherFinder.getVisibility() >= 1) {
+            weatherVisibility = "Good Visibility (>1km)";
+        }
+
+        else {
+            weatherVisibility = "Poor Visibilty, ensure you have high vis & Lights";
+        }
+
+        if (weatherFinder.getWind() >= 18) {
+            weatherWind = "Strong Winds";
+        }
+
+        else {
+            weatherWind = "Low wind";
+        }
+
+        builder1.setMessage(weatherRain + "\n" + weatherVisibility + "\n" + weatherWind);
 
         builder1.setCancelable(true);
 

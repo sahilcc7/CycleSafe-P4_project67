@@ -8,7 +8,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/etOrigin"
-        android:hint="Enter origin address" />
+        android:hint="Enter origin address, (current location is default)" />
 
     <AutoCompleteTextView
         android:id="@+id/etDestination"
@@ -25,6 +25,7 @@
             android:id="@+id/btnFindPath"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:imeOptions="actionDone"
             android:text="Plan Route" />
 
         <ImageView

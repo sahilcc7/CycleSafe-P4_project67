@@ -131,7 +131,7 @@ public class TrafficFinder {
         } else if (congestionString.equals("Medium")) {
             tempScore = 3;
         } else if (congestionString.equals("Heavy")) {
-            tempScore = 4;
+            tempScore = 2;
         } else {
             Log.d("ERROR", "UNDDEFINED!!!!!!!!!!!");
             tempScore = 0;
