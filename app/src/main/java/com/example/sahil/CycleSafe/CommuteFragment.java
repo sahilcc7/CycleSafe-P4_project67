@@ -1,4 +1,4 @@
-package com.example.sahil.project67;
+package com.example.sahil.CycleSafe;
 
 import android.Manifest;
 import android.app.AlertDialog;
@@ -11,8 +11,6 @@ import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Build;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.app.ProgressDialog;
@@ -24,15 +22,11 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.google.android.gms.maps.GoogleMap;
-import android.support.v4.app.FragmentActivity;
-import android.os.Bundle;
-import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
+
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 
@@ -44,7 +38,6 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
-import com.google.android.gms.location.LocationServices;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
@@ -71,9 +64,8 @@ public class CommuteFragment extends Fragment implements OnMapReadyCallback, Dir
     private List<Polyline> polylinePaths = new ArrayList<>();
     private ProgressDialog progressDialog;
     private double locationLong, locationLat;
-    //private static final int MY_PERMISSION_ACCESS_COARSE_LOCATION = 11;
 
-
+    //Instantiate weatherFinder object to get weather status
     WeatherFinder weatherFinder = new WeatherFinder(getContext(), "Auckland");
 
 
@@ -93,15 +85,11 @@ public class CommuteFragment extends Fragment implements OnMapReadyCallback, Dir
 
         Context context = this.getActivity();
 
-
-
         LocationManager locationManager = (LocationManager)
                 context.getSystemService(Context.LOCATION_SERVICE);
         Criteria criteria = new Criteria();
 
-
-
-
+        //Get device location.
         Location location = locationManager.getLastKnownLocation(locationManager.getBestProvider(criteria,false));
 
         locationLat = location.getLatitude();
@@ -129,7 +117,8 @@ public class CommuteFragment extends Fragment implements OnMapReadyCallback, Dir
     }
 
 
-    //Execute below once "Find" button pressed
+    /*Executes after "Find" button pressed.
+    * Calls DirectionFinder, TrafficFinder, WeatherFinder modules*/
     public void sendRequest() {
         Context context = getActivity().getApplicationContext();
 

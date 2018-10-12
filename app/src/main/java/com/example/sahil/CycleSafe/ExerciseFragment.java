@@ -1,4 +1,4 @@
-package com.example.sahil.project67;
+package com.example.sahil.CycleSafe;
 
 import android.Manifest;
 import android.app.ProgressDialog;
@@ -43,7 +43,6 @@ import Modules.DirectionFinder;
 import Modules.DirectionFinderListener;
 import Modules.Distance;
 import Modules.Duration;
-import Modules.PlacesAutoCompleteAdapter;
 import Modules.Route;
 
 public class ExerciseFragment extends Fragment implements OnMapReadyCallback, DirectionFinderListener {

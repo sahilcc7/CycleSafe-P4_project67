@@ -1,18 +1,7 @@
 package Modules;
 
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.app.DialogFragment;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.util.Log;
-import android.widget.Toast;
-
-import com.example.sahil.project67.CommuteFragment;
-import com.example.sahil.project67.MainActivity;
-import com.example.sahil.project67.R;
 
 import org.json.JSONException;
 import org.json.JSONObject;

@@ -1,17 +1,10 @@
-package com.example.sahil.project67;
+package com.example.sahil.CycleSafe;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentManager;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
-import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -20,14 +13,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.content.Intent;
-import android.widget.Toast;
-import android.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.support.v7.widget.Toolbar;
 
 
 public class MainActivity extends AppCompatActivity
@@ -36,12 +21,14 @@ implements NavigationView.OnNavigationItemSelectedListener {
     @Override
     public void onCreate(Bundle savedInstanceState) {
 
-        if ( ContextCompat.checkSelfPermission( this, android.Manifest.permission.ACCESS_COARSE_LOCATION ) != PackageManager.PERMISSION_GRANTED ) {
-
-            ActivityCompat.requestPermissions( this, new String[] {  android.Manifest.permission.ACCESS_COARSE_LOCATION  },
+        /*This checks if the mobile device has permission to access GPS location.
+        Prompts user on login screen if no permission access.*/
+        if ( ContextCompat.checkSelfPermission( this, android.Manifest.permission.ACCESS_COARSE_LOCATION )
+                != PackageManager.PERMISSION_GRANTED ) {
+            ActivityCompat.requestPermissions( this, new String[] {
+                    android.Manifest.permission.ACCESS_COARSE_LOCATION  },
                     1 );
         }
-
 
 
         super.onCreate(savedInstanceState);
@@ -58,6 +45,7 @@ implements NavigationView.OnNavigationItemSelectedListener {
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
+        //Open login screen on launch.
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
                 .replace(R.id.content_frame, new LoginFragment())
@@ -100,6 +88,7 @@ implements NavigationView.OnNavigationItemSelectedListener {
         return super.onOptionsItemSelected(item);
     }
 
+    /*Setup Nav Bar for access to other modes.*/
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
