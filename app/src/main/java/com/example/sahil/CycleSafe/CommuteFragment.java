@@ -73,6 +73,8 @@ public class CommuteFragment extends Fragment implements OnMapReadyCallback, Dir
             new LatLng(-40, -168), new LatLng(71, 136)
     );
 
+    // This method is called when commute mode is first opened
+    // ie. the fragment is created
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
@@ -85,6 +87,7 @@ public class CommuteFragment extends Fragment implements OnMapReadyCallback, Dir
 
         Context context = this.getActivity();
 
+        // This chunk of code gets the user's current location
         LocationManager locationManager = (LocationManager)
                 context.getSystemService(Context.LOCATION_SERVICE);
         Criteria criteria = new Criteria();
@@ -100,11 +103,12 @@ public class CommuteFragment extends Fragment implements OnMapReadyCallback, Dir
         etOrigin = (AutoCompleteTextView) view.findViewById(R.id.etOrigin);
         etDestination = (AutoCompleteTextView) view.findViewById(R.id.etDestination);
 
+        //Calls the autocomplete methods
         etOrigin.setAdapter(new PlacesAutoCompleteAdapter(getActivity(), android.R.layout.simple_spinner_dropdown_item));
         etDestination.setAdapter(new PlacesAutoCompleteAdapter(getActivity(), android.R.layout.simple_spinner_dropdown_item));
 
 
-
+        //When the button is pressed, call the sendRequest method
         btnFindPath.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -124,13 +128,13 @@ public class CommuteFragment extends Fragment implements OnMapReadyCallback, Dir
 
         String latString = String.valueOf(locationLat);
         String longString = String.valueOf(locationLong);
+
+        // Sets the origin and destination variables to user inputs
         String origin = etOrigin.getText().toString();
         String destination = etDestination.getText().toString();
 
-        if (origin.isEmpty()) {
+        if (origin.isEmpty()) { // If no input for origin then set origin to current location
             origin =  latString + "," + longString;
-            //Toast.makeText(getActivity(), "Please enter origin address!", Toast.LENGTH_SHORT).show();
-            //return;
         }
         if (destination.isEmpty()) {
             Toast.makeText(getActivity(), "Please enter destination address!", Toast.LENGTH_SHORT).show();
@@ -179,17 +183,6 @@ public class CommuteFragment extends Fragment implements OnMapReadyCallback, Dir
                 .title("Auckland NZ")
                 .position(latlng)));
 
-        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return;
-        }
-
     }
 
     public boolean checkLocationPermission() {
@@ -197,22 +190,15 @@ public class CommuteFragment extends Fragment implements OnMapReadyCallback, Dir
                 Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
 
-            // Should we show an explanation?
             if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),
                     Manifest.permission.ACCESS_FINE_LOCATION)) {
 
-                // Show an expanation to the user *asynchronously* -- don't block
-                // this thread waiting for the user's response! After the user
-                // sees the explanation, try again to request the permission.
-                //  TODO: Prompt with explanation!
-
-                //Prompt the user once explanation has been shown
+                //Prompt the user
                 ActivityCompat.requestPermissions(getActivity(),
                         new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                         MY_PERMISSIONS_REQUEST_LOCATION);
 
             } else {
-                // No explanation needed, we can request the permission.
                 ActivityCompat.requestPermissions(getActivity(),
                         new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                         MY_PERMISSIONS_REQUEST_LOCATION);
@@ -251,6 +237,7 @@ public class CommuteFragment extends Fragment implements OnMapReadyCallback, Dir
         }
     }
 
+    // Called when directionFinder begins its functionality
     @Override
     public void onDirectionFinderStart() {
         progressDialog = ProgressDialog.show(getActivity(), "Please wait.",
@@ -275,9 +262,10 @@ public class CommuteFragment extends Fragment implements OnMapReadyCallback, Dir
         }
     }
 
+    // Called when directionFinder successfully finds the safest route
+    // This method draws the safest path onto the map
     @Override
     public void onDirectionFinderSuccess(List<Route> routes, int safestRouteIndex) {
-
 
         progressDialog.dismiss();
         polylinePaths = new ArrayList<>();
@@ -317,21 +305,10 @@ public class CommuteFragment extends Fragment implements OnMapReadyCallback, Dir
 
     }
 
-
-    private void initializeMap() {
-        if (mMap == null) {
-            SupportMapFragment mapFrag = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
-            //mapFrag.getMapAsync(this);
-        }
-    }
-
+    //Displays the weather dialog box
     public void showWeatherAlert() {
 
-
-
         AlertDialog.Builder builder1 = new AlertDialog.Builder(getContext());
-
-        Log.d("WEATHER", "weatherRain:" + weatherFinder.getVisibility());
 
         String weatherRain;
         String weatherVisibility;

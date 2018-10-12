@@ -60,6 +60,8 @@ public class ExerciseFragment extends Fragment implements OnMapReadyCallback, Di
     );
 
 
+    // This method is called when commute mode is first opened
+    // ie. the fragment is created
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
@@ -103,6 +105,7 @@ public class ExerciseFragment extends Fragment implements OnMapReadyCallback, Di
         }
 
         try {
+            //In exercise mode, the exerciseFlag variable is set to 1 when creating a directionFinder object
             new DirectionFinder(context, this, origin, destination,1).execute(); //Creates DirectionFinder OBJECT, calls execute() function
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
@@ -141,17 +144,6 @@ public class ExerciseFragment extends Fragment implements OnMapReadyCallback, Di
                 .title("Auckland NZ")
                 .position(latlng)));
 
-        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return;
-        }
-
     }
 
     public boolean checkLocationPermission() {
@@ -159,22 +151,15 @@ public class ExerciseFragment extends Fragment implements OnMapReadyCallback, Di
                 Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
 
-            // Should we show an explanation?
             if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),
                     Manifest.permission.ACCESS_FINE_LOCATION)) {
 
-                // Show an expanation to the user *asynchronously* -- don't block
-                // this thread waiting for the user's response! After the user
-                // sees the explanation, try again to request the permission.
-                //  TODO: Prompt with explanation!
-
-                //Prompt the user once explanation has been shown
+                //Prompt the user
                 ActivityCompat.requestPermissions(getActivity(),
                         new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                         MY_PERMISSIONS_REQUEST_LOCATION);
 
             } else {
-                // No explanation needed, we can request the permission.
                 ActivityCompat.requestPermissions(getActivity(),
                         new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                         MY_PERMISSIONS_REQUEST_LOCATION);
@@ -186,7 +171,6 @@ public class ExerciseFragment extends Fragment implements OnMapReadyCallback, Di
     }
 
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
-
 
     @Override
     public void onRequestPermissionsResult(int requestCode,
@@ -213,8 +197,7 @@ public class ExerciseFragment extends Fragment implements OnMapReadyCallback, Di
         }
     }
 
-
-
+    // Called when directionFinder begins its functionality
     @Override
     public void onDirectionFinderStart() {
         progressDialog = ProgressDialog.show(getActivity(), "Please wait.",
@@ -239,6 +222,8 @@ public class ExerciseFragment extends Fragment implements OnMapReadyCallback, Di
         }
     }
 
+    // Called when directionFinder successfully finds the safest route
+    // This method draws the safest path onto the map
     @Override
     public void onDirectionFinderSuccess(List<Route> routes, int safestRouteIndex) {
 
@@ -261,12 +246,6 @@ public class ExerciseFragment extends Fragment implements OnMapReadyCallback, Di
 
             DecimalFormat df = new DecimalFormat("#.#");
             String distanceString = df.format(distanceValue);
-
-
-
-
-
-
 
             ((TextView) getView().findViewById(R.id.tvDuration)).setText(durationValue + " mins");
             ((TextView) getView().findViewById(R.id.tvDistance)).setText(distanceString + " km");
@@ -292,14 +271,6 @@ public class ExerciseFragment extends Fragment implements OnMapReadyCallback, Di
         } catch (Exception e) {
             Toast.makeText(getActivity(), "GOOGLE API PROBLEM", Toast.LENGTH_LONG).show();
             e.printStackTrace();
-        }
-    }
-
-
-    private void initializeMap() {
-        if (mMap == null) {
-            SupportMapFragment mapFrag = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
-            //mapFrag.getMapAsync(this);
         }
     }
 

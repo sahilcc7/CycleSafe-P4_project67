@@ -14,10 +14,11 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
-
+//This class acts as the main class and controls what is on the user's screen
 public class MainActivity extends AppCompatActivity
 implements NavigationView.OnNavigationItemSelectedListener {
 
+    //Called when the app is opened
     @Override
     public void onCreate(Bundle savedInstanceState) {
 
@@ -55,6 +56,7 @@ implements NavigationView.OnNavigationItemSelectedListener {
         navigationView.setNavigationItemSelectedListener(this);
 
     }
+
 
     @Override
     public void onBackPressed() {
@@ -116,10 +118,7 @@ implements NavigationView.OnNavigationItemSelectedListener {
                     .commit();
 
 
-        } else if (id == R.id.nav_send) {
-
         }
-
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;

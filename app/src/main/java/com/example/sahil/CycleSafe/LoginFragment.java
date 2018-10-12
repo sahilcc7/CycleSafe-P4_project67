@@ -12,7 +12,6 @@ import android.widget.Button;
 public class LoginFragment extends Fragment {
 
     private Button loginButton;
-    private Button createNewAccountButton;
 
 
     @Nullable
