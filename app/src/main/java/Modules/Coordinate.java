@@ -1,8 +1,8 @@
 package Modules;
 
+//A simple co ordinate class which contains a latitude & longitude
 public class
 Coordinate {
-
     private double latitude;
     private double longitude;
 

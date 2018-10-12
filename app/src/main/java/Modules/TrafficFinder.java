@@ -14,8 +14,6 @@ import java.net.URL;
 
 
 public class TrafficFinder {
-
-
     private static final String TRAFFIC_API_URL = "http://dev.virtualearth.net/REST/V1/Routes/Driving?";
     private static final String BING_API_KEY = "AqS4Ne5sT_qCkBBMTzu9PrT0nTzTkI0XDl8Npw6AEr1DsvV0UheG0XT4j20CNXuc";
 
@@ -37,16 +35,17 @@ public class TrafficFinder {
 
     }
 
-
     private String createUrl(Coordinate wp1, Coordinate wp2) {
 
         return TRAFFIC_API_URL + "wp.1=" + wp1.getLat() + "," + wp1.getLon() + "&wp.2=" + wp2.getLat() + "," + wp2.getLon() + "&key=" + BING_API_KEY;
     }
 
+    // Finds the traffic between the two coordinates using the Bing API
     public void execute(Coordinate wp1, Coordinate wp2) throws JSONException {
         waitFlag = 1;
         final String URL = createUrl(wp1, wp2);
 
+        // Creates a new thread
         Thread thread = new Thread(new Runnable(){
             @Override
             public void run(){
@@ -71,8 +70,6 @@ public class TrafficFinder {
                 } catch (IOException e) {
                     Log.d("DEBUG", e.getMessage());
                 }
-
-                //Log.d("DEBUG", "Response code: " + responseCode);
 
                 try {
                     BufferedReader in = new BufferedReader(
@@ -104,14 +101,13 @@ public class TrafficFinder {
     }
 
 
+    // Parses the JSON data received from the API
     private void parseJSon(String data) throws JSONException {
-
 
         if (data == null) {
             Log.d("data", "THIS IS NULL");
             return;
         }
-
 
         JSONObject jsonData = new JSONObject(data);
 
@@ -122,6 +118,7 @@ public class TrafficFinder {
 
         int tempScore = 0;
 
+        // Sets the congestionScore of the route based on the traffic API
         if (congestionString.equals("Unknown")) {
             tempScore = 0;
         } else if (congestionString.equals("Light")) {
@@ -142,64 +139,17 @@ public class TrafficFinder {
         waitFlag = 0;
 
         Log.d("CONGESTION", "CONGESTION SCORE: " + congestionScore);
-        //listener.onDirectionFinderSuccess(routes);
     }
 
-
+    // Returns congestionScore
     public int getCongestionScore() {
         Log.d("CONGESTION", "CONGESTION SCORE-------------------------- " + congestionScore);
         return congestionScore;
-
     }
 
+    // Resets congestionScore
     public void resetCongestionScore() {
         congestionScore = 0;
-
     }
-
 }
-
-
-
-//        private class DownloadRawData extends AsyncTask<String, Void, String> {
-//
-//            @Override
-//            protected String doInBackground(String... params) {
-//                String link = params[0];
-//                try {
-//                    URL url = new URL(link);
-//                    InputStream is = url.openConnection().getInputStream();
-//                    StringBuffer buffer = new StringBuffer();
-//                    BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-//
-//                    String line;
-//                    while ((line = reader.readLine()) != null) {
-//                        buffer.append(line + "\n");
-//                    }
-//
-//                    //Log.d("RawData", "THIS IS RAW DATA: " + buffer);
-//
-//                    return buffer.toString();
-//
-//                } catch (MalformedURLException e) {
-//                    e.printStackTrace();
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
-//                return null;
-//            }
-//
-//            @Override
-//            protected void onPostExecute(String res) {
-//                try {
-//                    parseJSon(res);
-//                } catch (JSONException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        }
-//
-//    }
-
-
 
