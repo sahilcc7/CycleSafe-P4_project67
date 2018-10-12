@@ -175,13 +175,10 @@ public class CommuteFragment extends Fragment implements OnMapReadyCallback, Dir
             Log.e("StyleErrors", "Can't find style. Error: ", e);
         }
 
-        LatLng latlng = new LatLng(-36.8816822, 174.7559136);
+        LatLng latlng = new LatLng(locationLat, locationLong);
 
         etOrigin.setText("");
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latlng, 15));
-        originMarkers.add(mMap.addMarker(new MarkerOptions()
-                .title("Auckland NZ")
-                .position(latlng)));
 
     }
 
@@ -315,6 +312,7 @@ public class CommuteFragment extends Fragment implements OnMapReadyCallback, Dir
         String weatherWind;
 
 
+        //getters from weatherFinder to find conditions.
         if (weatherFinder.getRain() == 0) {
             weatherRain = "No Rain!";
         }
